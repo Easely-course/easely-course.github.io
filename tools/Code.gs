@@ -159,7 +159,8 @@ function decide_(row, dev, now) {
 function doGet(e) {
   const p = (e && e.parameter) || {};
   const out = o => ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
-  const code = norm_(p.c), dev = String(p.d || '').replace(/[^a-f0-9]/g, '').slice(0, 40);
+  // "c" is reserved by Google in web-app addresses: the code comes as "code"
+  const code = norm_(p.code), dev = String(p.d || '').replace(/[^a-f0-9]/g, '').slice(0, 40);
   if (!code || !dev) return out({ ok: false, why: 'nocode' });
   const lock = LockService.getScriptLock();
   lock.waitLock(20000);

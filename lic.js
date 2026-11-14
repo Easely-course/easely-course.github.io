@@ -29,7 +29,7 @@ async function kitaDevice() {
 /** Asks the seller's sheet. a: "act" (first entry) or "chk" (still allowed?). */
 async function kitaAsk(api, a, code, dev) {
   const ua = /iPad/.test(navigator.userAgent) ? 'iPad' : /iPhone/.test(navigator.userAgent) ? 'iPhone' : /Android/.test(navigator.userAgent) ? 'Android' : /Mac/.test(navigator.userAgent) ? 'Mac' : /Windows/.test(navigator.userAgent) ? 'Windows' : 'אחר';
-  const u = api + (api.indexOf('?') < 0 ? '?' : '&') + 'a=' + a + '&c=' + encodeURIComponent(code) + '&d=' + dev + '&ua=' + encodeURIComponent(ua) + '&t=' + Date.now();
+  const u = api + (api.indexOf('?') < 0 ? '?' : '&') + 'a=' + a + '&code=' + encodeURIComponent(code) + '&d=' + dev + '&ua=' + encodeURIComponent(ua) + '&t=' + Date.now();
   const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 15000);
   try { const r = await fetch(u, { signal: ctl.signal, cache: 'no-store' }); return await r.json(); } finally { clearTimeout(to); }
 }
