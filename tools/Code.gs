@@ -11,7 +11,7 @@ const LINK = 'https://easely-course.github.io/';
 const SHEET = 'קונים';
 const HEAD = ['שם', 'טלפון', 'קוד', 'סטטוס', 'ימים', 'הופעל בתאריך', 'בתוקף עד', 'מכשיר', 'סוג מכשיר', 'כניסה אחרונה', 'הערות'];
 const C = { name: 1, phone: 2, code: 3, status: 4, days: 5, start: 6, until: 7, dev: 8, ua: 9, seen: 10, note: 11 };
-const ACTIVE = 'פעיל', BLOCKED = 'חסום';
+const ACTIVE = 'פעיל', BLOCKED = 'חסום', ADMIN = 'מנהל';   // מנהל = נכנס מכל מכשיר, בלי הגבלת זמן
 
 // ===== תפריט בגיליון =====
 function onOpen() {
@@ -23,6 +23,7 @@ function onOpen() {
     .addItem('📱 איפוס מכשיר (הקונה החליף טלפון)', 'resetDevice')
     .addItem('⛔ חסימה / ביטול חסימה', 'toggleBlock')
     .addSeparator()
+    .addItem('👑 קישור מנהל – כניסה מכל מכשיר', 'adminLink')
     .addItem('⚙️ הכנת הגיליון (פעם אחת)', 'setup')
     .addToUi();
 }
@@ -60,6 +61,31 @@ function newCode_(sh) {
   }
 }
 const norm_ = v => { const s = String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); return s.length === 8 ? s.slice(0, 4) + '-' + s.slice(4) : s; };
+
+/** The owner's own permanent code: works on every device, never expires. Shows the personal admin link. */
+function adminLink() {
+  const sh = sheet_();
+  if (sh.getLastRow() < 1) setup();
+  const n = sh.getLastRow() - 1;
+  const vals = n > 0 ? sh.getRange(2, 1, n, HEAD.length).getValues() : [];
+  let i = vals.findIndex(r => r[C.status - 1] === ADMIN);
+  let code;
+  if (i < 0) {
+    code = newCode_(sh);
+    sh.appendRow(['👑 מנהל', '', code, ADMIN, '', '', '', '', '', '', 'כניסה מכל מכשיר, בלי הגבלת זמן. לא לשלוח לקונים!']);
+  } else code = vals[i][C.code - 1];
+  const url = LINK + '#admin=' + code;
+  const html = HtmlService.createHtmlOutput(
+    '<div dir="rtl" style="font-family:Arial;font-size:15px;line-height:1.7">' +
+    '<b>הקישור האישי שלך (מנהל):</b><br>' +
+    '<textarea id="t" readonly style="width:100%;height:60px;font-size:14px;direction:ltr">' + url + '</textarea>' +
+    '<button onclick="var t=document.getElementById(\'t\');t.select();document.execCommand(\'copy\');this.textContent=\'הועתק ✅\'" style="font-size:15px;padding:6px 16px">העתקה</button>' +
+    '<p>פותחים את הקישור בכל מכשיר (טלפון, מחשב, טאבלט) – ונכנסים ישר לקורס.<br>' +
+    'כדאי לשמור אותו במועדפים.<br><b>לא לשלוח את הקישור הזה לקונים.</b><br>' +
+    'אם הקישור דלף: מוחקים את שורת "👑 מנהל", ולוחצים שוב על התפריט – ייווצר קישור חדש.</p></div>')
+    .setWidth(460).setHeight(330);
+  SpreadsheetApp.getUi().showModalDialog(html, '👑 כניסת מנהל');
+}
 
 function newBuyer() {
   const ui = SpreadsheetApp.getUi();
@@ -144,6 +170,7 @@ function showMessage_(r) {
 function decide_(row, dev, now) {
   if (!row) return { ok: false, why: 'nocode' };
   if (row[C.status - 1] === BLOCKED) return { ok: false, why: 'blocked' };
+  if (row[C.status - 1] === ADMIN) return { ok: true, admin: true, exp: now + 3650 * 86400000 };   // the owner: any device, no end
   const owner = String(row[C.dev - 1] || '');
   const until = row[C.until - 1] ? new Date(row[C.until - 1]).getTime() : 0;
   if (!owner) {
@@ -182,7 +209,7 @@ function doGet(e) {
       if (!d.ok && d.why === 'device') appendNote_(r, 'ניסיון ממכשיר אחר ' + fmt_(new Date(now)));
     }
     if (!d.ok) return out({ ok: false, why: d.why });
-    return out({ ok: true, exp: d.exp, key: KEY, name: row[C.name - 1] });
+    return out({ ok: true, exp: d.exp, key: KEY, name: row[C.name - 1], admin: !!d.admin });
   } finally {
     lock.releaseLock();
   }

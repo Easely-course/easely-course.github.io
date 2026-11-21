@@ -130,8 +130,9 @@ $('go').onclick = async () => {
     await swReady();
     const j = await kitaAsk(API, 'act', code, await kitaDevice());
     if (!j || !j.ok) return err(j && j.why ? j.why : 'server');
-    await kitaSet('lic', { key: j.key, exp: j.exp, code, name: j.name || '', chk: Date.now() });
+    await kitaSet('lic', { key: j.key, exp: j.exp, code, name: j.name || '', chk: Date.now(), admin: !!j.admin });
     try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (e) {}
+    if (j.admin) { await swReady(); return enter(); }   // the owner goes straight in
     $('helloText').textContent = (j.name ? 'שלום ' + j.name + '! ' : 'שלום! ') + 'הקוד הופעל במכשיר הזה. הגישה בתוקף עד ' + fmtDate(j.exp) + '.';
     show('hello');
   } catch (e) {
@@ -146,6 +147,12 @@ $('start').onclick = enter;
   const why = new URLSearchParams(location.search).get('why');
   let lic = null;
   try { lic = await kitaGet('lic'); } catch (e) {}
+  // the owner's personal link: ...github.io/#admin=XXXX-XXXX → straight into the course on any device
+  const adm = (location.hash.match(/admin=([A-Za-z0-9-]{8,9})/) || [])[1];
+  if (adm) {
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    if (!lic || lic.code !== norm(adm) || why) { show('form'); $('code').value = norm(adm); return $('go').click(); }
+  }
   if (why && why !== 'none') { if (lic) await kitaSet('lic', undefined); return err(why); }
   if (!lic) { show('form'); help(); return; }
   if (Date.now() > lic.exp) { await kitaSet('lic', undefined); return err('expired'); }
