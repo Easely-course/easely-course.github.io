@@ -1,12 +1,12 @@
 /**
  * שלום כיתה א׳ – ניהול קוני הקורס בגיליון Google.
- * כל קונה = שורה. כל קוד פועל במכשיר אחד בלבד, למשך 30 יום מהכניסה הראשונה.
+ * כל קונה = שורה. כל קוד פועל במכשיר אחד בלבד, למשך 90 יום מהכניסה הראשונה.
  * הקובץ הזה מודבק ב"תוספים ← Apps Script" של הגיליון, ומופעל כ"אפליקציית אינטרנט".
  */
 
 // ===== הגדרות =====
 const KEY = '__KEY__';            // מפתח הפתיחה של הקורס – סודי! לא לשתף ולא לשנות
-const DAYS = 30;                  // כמה ימים הגישה בתוקף מהכניסה הראשונה
+const DAYS = 90;                  // כמה ימים הגישה בתוקף מהכניסה הראשונה (לקונים חדשים)
 const LINK = 'https://easely-course.github.io/';
 const SHEET = 'קונים';
 const HEAD = ['שם', 'טלפון', 'קוד', 'סטטוס', 'ימים', 'הופעל בתאריך', 'בתוקף עד', 'מכשיר', 'סוג מכשיר', 'כניסה אחרונה', 'הערות'];
@@ -19,7 +19,7 @@ function onOpen() {
     .addItem('➕ קונה חדש', 'newBuyer')
     .addItem('💬 הודעה לשליחה לקונה (בשורה המסומנת)', 'messageForRow')
     .addSeparator()
-    .addItem('🔄 חידוש לחודש נוסף – קוד חדש', 'renew')
+    .addItem('🔄 חידוש גישה – קוד חדש ל־' + DAYS + ' יום', 'renew')
     .addItem('📱 איפוס מכשיר (הקונה החליף טלפון)', 'resetDevice')
     .addItem('⛔ חסימה / ביטול חסימה', 'toggleBlock')
     .addSeparator()
@@ -117,7 +117,8 @@ function renew() {
   const sh = sheet_();
   sh.getRange(r, C.code).setValue(newCode_(sh));
   sh.getRange(r, C.status).setValue(ACTIVE);
-  sh.getRange(r, C.start, 1, 4).clearContent();   // מתחיל חודש חדש מהכניסה הבאה
+  sh.getRange(r, C.days).setValue(DAYS);
+  sh.getRange(r, C.start, 1, 4).clearContent();   // תקופה חדשה מתחילה מהכניסה הבאה
   appendNote_(r, 'חודש ' + fmt_(new Date()));
   showMessage_(r);
 }
