@@ -7,7 +7,7 @@
 // ===== הגדרות =====
 const KEY = '__KEY__';            // מפתח הפתיחה של הקורס – סודי! לא לשתף ולא לשנות
 const DAYS = 30;                  // כמה ימים הגישה בתוקף מהכניסה הראשונה
-const LINK = 'https://heavyfocus-art.github.io/shalom-kita-a/';
+const LINK = 'https://easely-course.github.io/';
 const SHEET = 'קונים';
 const HEAD = ['שם', 'טלפון', 'קוד', 'סטטוס', 'ימים', 'הופעל בתאריך', 'בתוקף עד', 'מכשיר', 'סוג מכשיר', 'כניסה אחרונה', 'הערות'];
 const C = { name: 1, phone: 2, code: 3, status: 4, days: 5, start: 6, until: 7, dev: 8, ua: 9, seen: 10, note: 11 };

@@ -1,6 +1,6 @@
 # שלום כיתה א׳ – הקורס המוגן
 
-האתר: https://heavyfocus-art.github.io/shalom-kita-a/
+האתר: https://easely-course.github.io/
 
 - `index.html` – מסך הכניסה עם הקוד האישי של הקונה.
 - `enc/` – תוכן הקורס **מוצפן** (AES-256-GCM). בלי קוד תקף אי אפשר לפתוח אותו.
