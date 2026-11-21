@@ -1,7 +1,7 @@
 /* שלום כיתה א׳ – opens the encrypted course only on a device with a valid licence. */
 'use strict';
 importScripts('lic.js');
-const VERSION = 6;                       // raise on every new version of the course
+const VERSION = 7;                       // raise on every new version of the course
 const CACHE = 'kita-enc-' + VERSION;
 const SHELL = 'kita-shell-' + VERSION;
 const SHELL_FILES = ['./', 'index.html', 'lic.js', 'config.js', 'guard.js', 'icon.png'];
