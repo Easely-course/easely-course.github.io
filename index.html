@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff7ec;--ink:#3a3150;--muted:#6c6382;--or:#ef6c00;--or-d:#b94f00;--wa:#1fa855;--card:#fff;--red:#c62828}
+:root{--bg:#fff7ec;--ink:#3a3150;--muted:#6c6382;--or:#c25400;--or-d:#7f3600;--wa:#137a3a;--card:#fff;--red:#c62828}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;font-family:Rubik,"Arial Hebrew",Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 12% 8%,#ffe1ec 0,transparent 340px),radial-gradient(circle at 92% 30%,#dcedff 0,transparent 380px),var(--bg)}
 main{max-width:460px;margin:0 auto;padding:36px 16px 40px;display:grid;gap:18px}
@@ -25,10 +25,15 @@ h1{margin:0;text-align:center;font-weight:800;font-size:30px;line-height:1.2}
 label{font-weight:700;font-size:16px}
 input{width:100%;font:800 28px/1 Rubik,Arial,sans-serif;letter-spacing:4px;text-align:center;direction:ltr;padding:16px 10px;border-radius:16px;border:3px solid #f0dcc3;background:#fffdf9;color:var(--ink);text-transform:uppercase;outline:none}
 input:focus{border-color:var(--or)}
-.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;cursor:pointer;font:800 22px Rubik,Arial,sans-serif;color:#fff;background:linear-gradient(#ff9a3c,var(--or));padding:16px;border-radius:999px;box-shadow:0 7px 0 var(--or-d);text-decoration:none}
+.btn:focus-visible,a:focus-visible,input:focus-visible{outline:4px solid #1a4fd6;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}.btn:active{transform:none}}
+footer{text-align:center;display:grid;gap:8px}
+footer nav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 16px}
+footer a{color:var(--ink);font-weight:600;font-size:15px}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;cursor:pointer;font:800 22px Rubik,Arial,sans-serif;color:#fff;background:linear-gradient(#c25400,#a84700);padding:16px;border-radius:999px;box-shadow:0 7px 0 var(--or-d);text-decoration:none}
 .btn:active{transform:translateY(4px);box-shadow:0 3px 0 var(--or-d)}
 .btn[disabled]{opacity:.6}
-.btn.wa{background:var(--wa);box-shadow:0 7px 0 #16843f;font-size:18px}
+.btn.wa{background:var(--wa);box-shadow:0 7px 0 #0d5a2a;font-size:18px}
 .msg{border-radius:16px;padding:12px 14px;font-weight:600;font-size:16px;line-height:1.45;display:none}
 .msg.err{display:block;background:#ffe4e5;color:#9b1c20}
 .msg.ok{display:block;background:#dcf8ec;color:#11603f}
@@ -38,6 +43,7 @@ ul.small{padding-inline-start:18px;margin:0}
 .spin{width:44px;height:44px;border-radius:50%;border:5px solid #f0dcc3;border-top-color:var(--or);animation:r 1s linear infinite;margin:10px auto}
 @keyframes r{to{transform:rotate(360deg)}}
 .hidden{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 </head>
 <body>
@@ -47,15 +53,15 @@ ul.small{padding-inline-start:18px;margin:0}
 
   <section class="card" id="wait">
     <div class="spin" aria-hidden="true"></div>
-    <p class="center small" id="waitText">בודקים את הגישה שלכם…</p>
+    <p class="center small" id="waitText" role="status" aria-live="polite">בודקים את הגישה שלכם…</p>
   </section>
 
   <section class="card hidden" id="form">
     <p class="lead" style="margin-top:-4px">מקלידים את הקוד האישי שקיבלתם בוואטסאפ אחרי הרכישה</p>
     <label for="code">הקוד האישי שלכם</label>
-    <input id="code" inputmode="text" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" maxlength="11" placeholder="XXXX-XXXX">
+    <input id="code" aria-describedby="msg" inputmode="text" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" maxlength="11" placeholder="XXXX-XXXX">
     <div class="msg" id="msg" role="alert"></div>
-    <button class="btn" id="go" type="button">כניסה לקורס 🎒</button>
+    <button class="btn" id="go" type="button">כניסה לקורס <span aria-hidden="true">🎒</span></button>
     <ul class="small">
       <li>הקוד אישי ופועל <b>במכשיר אחד בלבד</b>.</li>
       <li>הגישה בתוקף <b>90 יום</b> מהכניסה הראשונה.</li>
@@ -66,11 +72,21 @@ ul.small{padding-inline-start:18px;margin:0}
 
   <section class="card hidden" id="hello">
     <div class="msg ok" id="helloText"></div>
-    <button class="btn" id="start" type="button">מתחילים! ⬅</button>
+    <button class="btn" id="start" type="button">מתחילים! <span aria-hidden="true">⬅</span></button>
     <p class="small center">💡 כדאי להוסיף את הקורס למסך הבית: בדפדפן ← "שיתוף" או ⋮ ← "הוספה למסך הבית".</p>
   </section>
 
-  <a class="btn wa hidden" id="help" target="_blank" rel="noopener">💬 צריכים עזרה? כתבו לנו בוואטסאפ</a>
+  <a class="btn wa hidden" id="help" target="_blank" rel="noopener"><span aria-hidden="true">💬</span> צריכים עזרה? כתבו לנו בוואטסאפ<span class="sr"> (נפתח בחלון חדש)</span></a>
+
+  <footer>
+    <nav aria-label="מידע משפטי">
+      <a href="info.html">מידע לפני רכישה</a>
+      <a href="terms.html">תקנון ותנאי שימוש</a>
+      <a href="privacy.html">מדיניות פרטיות</a>
+      <a href="accessibility.html">הצהרת נגישות</a>
+    </nav>
+    <p class="small">מוזיקה: "Fretless" מאת Kevin MacLeod (<a href="https://incompetech.com" lang="en" dir="ltr">incompetech.com</a>), ברישיון <a href="https://creativecommons.org/licenses/by/4.0/deed.he" lang="en" dir="ltr">CC BY 4.0</a></p>
+  </footer>
 </main>
 <script src="config.js"></script>
 <script src="lic.js"></script>
@@ -138,7 +154,7 @@ $('go').onclick = async () => {
   } catch (e) {
     err(e && e.message === 'sw' ? 'sw' : navigator.onLine === false ? 'net' : 'server');
   } finally {
-    $('go').disabled = false; $('go').textContent = 'כניסה לקורס 🎒';
+    $('go').disabled = false; $('go').innerHTML = 'כניסה לקורס <span aria-hidden="true">🎒</span>';
   }
 };
 $('start').onclick = enter;
