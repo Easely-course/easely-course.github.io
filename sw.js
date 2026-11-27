@@ -1,7 +1,7 @@
 /* שלום כיתה א׳ – opens the encrypted course only on a device with a valid licence. */
 'use strict';
 importScripts('lic.js');
-const VERSION = 9;                       // raise on every new version of the course
+const VERSION = 10;                      // raise on every new version of the course
 const CACHE = 'kita-enc-' + VERSION;
 const SHELL = 'kita-shell-' + VERSION;
 const SHELL_FILES = ['./', 'index.html', 'lic.js', 'config.js', 'guard.js', 'icon.png'];
@@ -40,7 +40,7 @@ async function serve(rel, req) {
   const encUrl = new URL('enc/' + rel + '.bin', self.registration.scope).href;
   let res = await caches.match(encUrl);
   if (!res) {
-    try { res = await fetch(encUrl); } catch (e) { return new Response('', { status: 504 }); }
+    try { res = await fetch(encUrl, { cache: 'no-cache' }); } catch (e) { return new Response('', { status: 504 }); }
     if (!res.ok) return new Response('', { status: 404 });
     const copy = res.clone();
     caches.open(CACHE).then(c => c.put(encUrl, copy));
