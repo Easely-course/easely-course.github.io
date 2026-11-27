@@ -1,10 +1,10 @@
 /* שלום כיתה א׳ – opens the encrypted course only on a device with a valid licence. */
 'use strict';
 importScripts('lic.js');
-const VERSION = 12;                      // raise on every new version of the course
+const VERSION = 13;                      // raise on every new version of the course
 const CACHE = 'kita-enc-' + VERSION;
 const SHELL = 'kita-shell-' + VERSION;
-const SHELL_FILES = ['./', 'index.html', 'lic.js', 'config.js', 'guard.js', 'icon.png'];
+const SHELL_FILES = ['./', 'index.html', 'lic.js', 'config.js', 'guard.js', 'a11y.js', 'icon.png'];
 const MIME = { html: 'text/html; charset=utf-8', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', mp3: 'audio/mpeg', js: 'text/javascript', css: 'text/css', json: 'application/json', svg: 'image/svg+xml' };
 
 self.addEventListener('install', e => {
