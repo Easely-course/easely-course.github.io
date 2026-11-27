@@ -33,6 +33,10 @@
 #a11yMenu .foot{display:flex;justify-content:space-between;gap:10px;margin-top:10px;align-items:center}
 #a11yMenu .foot a{color:#1a4fd6}
 #a11yMenu .foot button{border:0;background:none;color:#a00;font:inherit;text-decoration:underline;cursor:pointer}
+html.a11y-course #a11yBtn{top:6px;bottom:auto;left:10px;width:40px;height:40px;border-width:2px;box-shadow:0 2px 0 #e7d6bd}
+html.a11y-course #a11yBtn svg{width:27px;height:27px}
+html.a11y-course #a11yMenu{top:56px;bottom:auto;left:10px}
+html.a11y-course #top{padding-left:60px!important}
 html.a11y-big{font-size:118%}
 html.a11y-big body{zoom:1.15}
 html.a11y-page.a11y-contrast body{background:#000!important;color:#fff!important}
